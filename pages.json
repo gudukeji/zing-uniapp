@@ -1,0 +1,698 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "首页",
+        "enablePullDownRefresh": true,
+        "navigationBarTextStyle": "black",
+        "backgroundColorTop": "#ffffff",
+        "backgroundColorBottom": "#ffffff"
+      }
+    },
+    // {
+    //   "path": "pages/index/index2",
+    //   "style": {
+    //     "navigationStyle": "custom",
+    //     "enablePullDownRefresh": true,
+    //     "navigationBarTextStyle": "black",
+    //     "backgroundColorTop": "#ffffff",
+    //     "backgroundColorBottom": "#ffffff"
+    //   }
+    // },
+    {
+      "path": "pages/note/circlemember",
+      "style": {
+        "navigationStyle": "default",
+		    "navigationBarBackgroundColor":"#FFFFFF",
+        "navigationBarTitleText": "圈子成员"
+      }
+    },
+    {
+      "path": "pages/index/shop",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商城",
+        "enablePullDownRefresh": true,
+        "navigationBarTextStyle": "black",
+        "backgroundColorTop": "#ffffff",
+        "backgroundColorBottom": "#ffffff"
+      }
+    },
+    {
+      "path": "pages/index/dynamic",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "动态",
+        "enablePullDownRefresh": true,
+        "navigationBarTextStyle": "black",
+        "backgroundColorTop": "#ffffff",
+        "backgroundColorBottom": "#ffffff"
+      }
+    },
+    {
+      "path": "pages/index/message",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "消息",
+        "enablePullDownRefresh": true,
+        "navigationBarTextStyle": "black",
+        "backgroundColorTop": "#ffffff",
+        "backgroundColorBottom": "#ffffff"
+      }
+    },
+    {
+      "path": "pages/index/center",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "个人中心",
+        "enablePullDownRefresh": true,
+        "navigationBarTextStyle": "black",
+        "backgroundColorTop": "#ffffff",
+        "backgroundColorBottom": "#ffffff"
+      }
+    },
+    {
+      "path": "pages/activity/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "活动列表",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/activity/details",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "活动详情"
+      }
+    },
+    {
+      "path": "pages/search/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "搜索"
+      }
+    },
+    {
+      "path": "pages/user/details",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "用户详情"
+      }
+    },
+    {
+      "path": "pages/note/add",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "发布笔记"
+      }
+    },
+    {
+      "path": "pages/note/details",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "笔记详情"
+      }
+    },
+    {
+      "path": "pages/note/video",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "视频播放"
+      }
+    },
+    {
+      "path": "pages/note/circle",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "圈子详情"
+      }
+    },
+    {
+      "path": "pages/note/manghe",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "树洞盲盒"
+      }
+    },
+    {
+      "path": "pages/note/publish-tree-hole-simple",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "发布纸条"
+      }
+    },
+    {
+      "path": "pages/note/my-tree-hole",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的纸条"
+      }
+    },
+    {
+      "path": "pages/note/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "纸条详情"
+      }
+    },
+            {
+          "path": "pages/users/user_sgin_list/index",
+          "style": {
+        "navigationStyle": "default",
+		    "navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "签到记录",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/users/user_sgin/index",
+          "style": {
+            "navigationStyle": "default",
+		        "navigationBarBackgroundColor":"#FFFFFF",
+            "enablePullDownRefresh": true,
+            "navigationBarTitleText": "签到"
+          }
+        },
+    {
+      "path": "pages/goods/classify",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商品分类"
+      }
+    },
+    {
+      "path": "pages/goods/cart",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
+      "path": "pages/goods/details",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商品详情"
+      }
+    },
+    {
+      "path": "pages/goods/evaluate",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商品评价"
+      }
+    },
+    {
+      "path": "pages/order/settlement",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "订单结算"
+      }
+    },
+    {
+      "path": "pages/order/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的订单",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/order/details",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "订单详情"
+      }
+    },
+    {
+      "path": "pages/center/card",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的卡券"
+      }
+    },
+    {
+      "path": "pages/center/means",
+      "style": {
+        "navigationStyle": "default",
+		"navigationBarBackgroundColor":"#FFFFFF",
+        "navigationBarTitleText": "编辑资料"
+      }
+    },
+    {
+      "path": "pages/center/circle",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的圈子",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/center/follow",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "关注/粉丝",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/center/address",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "地址管理"
+      }
+    },
+    {
+      "path": "pages/setting/privacy",
+      "style": {
+        "navigationStyle": "default",
+		"navigationBarBackgroundColor":"#FFFFFF",
+        "navigationBarTitleText": "隐私设置"
+      }
+    },
+    {
+      "path": "pages/setting/index",
+      "style": {
+        "navigationStyle": "default",
+		"navigationBarBackgroundColor":"#FFFFFF",
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "pages/setting/logout",
+      "style": {
+        "navigationStyle": "default",
+		"navigationBarBackgroundColor":"#FFFFFF",
+        "navigationBarTitleText": "账号注销"
+      }
+    },
+    {
+      "path": "pages/setting/xinxuan",
+      "style": {
+        "navigationStyle": "default",
+		"navigationBarBackgroundColor":"#FFFFFF",
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/setting/webview",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "网页"
+      }
+    },
+    {
+          "path": "pages/users/wechat_login/index",
+          "style": {
+			"navigationStyle": "default",
+		    "navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "微信登录"
+          }
+     },
+     {
+          "path": "pages/users/qq_login/index",
+          "style": {
+			"navigationStyle": "default",
+		    "navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "QQ登录"
+          }
+     },
+     {
+          "path": "pages/users/login/index",
+          "style": {
+            "navigationStyle": "default",
+		    "navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "登录"
+          }
+    },
+    {
+          "path": "pages/users/user_pwd_edit/index",
+          "style": {
+            "navigationStyle": "default",
+		    "navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "修改密码"
+          }
+        },
+        
+        {
+          "path": "pages/users/user_phone/index",
+          "style": {
+			"navigationStyle": "default",
+			"navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "绑定手机号"
+          }
+        },
+        {
+          "path": "pages/users/binding_phone/index",
+          "style": {
+			"navigationStyle": "default",
+			"navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "绑定手机"
+          }
+        },
+        {
+          "path": "pages/center/circle-create",
+          "style": {
+            "navigationStyle": "default",
+            "navigationBarBackgroundColor":"#FFFFFF",
+            "navigationBarTitleText": "创建圈子"
+          }
+        },
+        {
+          "path": "pages/setting/realname",
+          "style": {
+            "navigationStyle": "default",
+            "navigationBarBackgroundColor": "#FFFFFF",
+            "navigationBarTitleText": "实名认证"
+          }
+        },
+        // {
+        //   "path": "pages/users/visit_list/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "访客列表",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_vip_areer/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "会员等级"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_vip/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "会员中心"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_spread_user/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "我的推广",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_spread_money/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "佣金明细",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_spread_code/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "推广二维码"
+        //   }
+        // },
+
+        // {
+        //   "path": "pages/users/user_return_list/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "退货列表",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+
+        // {
+        //   "path": "pages/users/user_payment/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "支付"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_money/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "我的余额",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_invoice_order/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "订单发票",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_invoice_list/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "发票列表",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_invoice_form/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "发票信息"
+        //   }
+        // },
+        {
+          "path": "pages/users/user_integral/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的积分",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/topic/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "话题列表",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/topic/details",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "话题详情",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/center/visitor",
+          "style": {
+           "navigationStyle": "default",
+            "navigationBarBackgroundColor": "#FFFFFF",
+            "navigationBarTitleText": "访客记录",
+            "enablePullDownRefresh": true
+          }
+        },
+        // {
+        //   "path": "pages/users/user_info/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "个人资料"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_goods_collection/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "我的收藏",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_get_coupon/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "领取优惠券"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_distribution_level/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "分销等级"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_coupon/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "我的优惠券",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_cash/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "提现"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_cancellation/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "注销账户"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/user_bill/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "账单明细",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+
+        // {
+        //   "path": "pages/users/staff_list/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "员工列表",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/scan_login/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "扫码登录"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/retrievePassword/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "找回密码"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/promoter_rank/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "推广排行榜",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/promoter-order/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "推广订单",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/promoter-list/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "推广人列表",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        {
+          "path": "pages/users/privacy/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "隐私政策"
+          }
+        },
+        {
+  "path": "pages/users/qq_subscribe/index",
+  "style": {
+    "navigationStyle": "default",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "QQ小程序授权"
+  }
+},
+{
+  "path": "pages/users/qq_subscribe/subscribe",
+  "style": {
+    "navigationStyle": "default",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "QQ消息订阅"
+  }
+}
+        // {
+        //   "path": "pages/users/payment_on_behalf/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "代付"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/message_center/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "消息中心",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/commission_rank/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "佣金排行",
+        //     "enablePullDownRefresh": true
+        //   }
+        // },
+
+        // {
+        //   "path": "pages/users/auth/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "授权登录"
+        //   }
+        // },
+        // {
+        //   "path": "pages/users/alipay_invoke/index",
+        //   "style": {
+        //     "navigationStyle": "custom",
+        //     "navigationBarTitleText": "支付宝支付"
+        //   }
+        // }
+
+  ],
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "ViBe慢社交软件",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f8f8f8"
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "plugins": {
+
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseAddress",
+    "chooseLocation"
+  ],
+  "requiredBackgroundModes": [
+    "audio"
+  ],
+  "easycom": {
+    "autoscan": false,
+    "custom": {
+      "^uni-popup$": "@/uni_modules/uni-popup/components/uni-popup/uni-popup.vue",
+      "^uni-transition$": "@/uni_modules/uni-transition/components/uni-transition/uni-transition.vue",
+      "^uni-load-more$": "@/uni_modules/uni-load-more/components/uni-load-more/uni-load-more.vue"
+      
+    }
+  }
+}

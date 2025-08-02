@@ -1,3 +1,32 @@
+<!--
+  个人中心页面 - 优化版本
+  
+  主要优化内容：
+  1. 登录状态检查优化：
+     - 添加10秒内不重复检查的机制
+     - 缓存登录状态，避免频繁检查
+     - 使用状态跟踪，减少不必要的API调用
+  
+  2. 页面刷新优化：
+     - 增加防抖时间到1秒
+     - 添加页面初始化状态跟踪
+     - 优化onShow生命周期，避免重复初始化
+  
+  3. 数据加载优化：
+     - 静默刷新机制，只刷新必要数据
+     - 访问记录频率限制（1分钟内不重复记录）
+     - 优化加载状态管理，避免状态冲突
+  
+  4. 导航栏优化：
+     - 减少不必要的颜色变化调用
+     - 添加状态跟踪，只在必要时更新
+  
+  5. 错误处理优化：
+     - 区分不同类型的错误，避免不必要的提示
+     - 优化重试机制
+  
+  这些优化将显著减少页面的频繁刷新和登录检查，提升用户体验。
+-->
 <template>
   <view class="container" :class="{'no-scroll': showSidebar}">
     <view class="nav-box" :style="{'padding-top': statusBarHeight + 'px', 'background': 'rgba(255,255,255,'+ navbarTrans +')'}">
@@ -410,15 +439,42 @@ export default {
           userInfo: 0,
           dynamicList: 0
         }
-      }
+      },
+
+      // 新增：登录状态检查优化
+      loginCheckState: {
+        lastCheckTime: 0,
+        checkInterval: 10000, // 10秒内不重复检查
+        isChecking: false,
+        lastLoginState: null
+      },
+
+      // 新增：页面状态管理
+      pageState: {
+        isInitialized: false,
+        lastVisitTime: 0,
+        visitInterval: 60000, // 1分钟内不重复记录访问
+        hasShown: false
+      },
+
+      // 新增：导航栏状态跟踪
+      lastNavColorState: false
     }
   },
   onPullDownRefresh() {
-    // 统一登录状态检查
-    if (!this.checkLoginStatus()) {
+    // 使用缓存的登录状态检查，避免重复检查
+    const isLoggedIn = this.checkLoginStatus();
+    if (!isLoggedIn) {
       uni.stopPullDownRefresh();
       return;
     }
+    
+    // 如果正在刷新中，直接停止下拉刷新
+    if (this.loadingState.pullRefresh) {
+      uni.stopPullDownRefresh();
+      return;
+    }
+    
     this.refreshData(true);
   },
   onLoad() {
@@ -436,13 +492,16 @@ export default {
 
     // 等待状态同步完成后再检查登录状态
     this.$nextTick(() => {
-      // 检查登录状态
-      if (!this.checkLoginStatus(true)) {
-        return;
+      // 检查登录状态（使用优化后的检查方法）
+      const isLoggedIn = this.checkLoginStatus(true);
+      
+      if (isLoggedIn) {
+        // 异步初始化页面数据
+        this.initPageData();
+      } else {
+        // 未登录状态，设置页面为已初始化，避免重复检查
+        this.pageState.isInitialized = true;
       }
-
-      // 异步初始化页面数据
-      this.initPageData();
     });
   },
   onUnload() {
@@ -458,23 +517,60 @@ export default {
     // 清理过期的tab数据缓存
     this.cleanExpiredTabCache();
 
-    // 统一登录状态检查
-    if (!this.checkLoginStatus(true)) {
-      return;
-    }
-
-    // 检查是否需要刷新数据
-    if (this.isLogin) {
-      // 优化：使用防抖避免频繁刷新
-      this.debounceRefresh();
-
-      // 记录访问（异步执行，不阻塞主流程）
-      this.$nextTick(() => {
-        this.setVisit();
-      });
-    }
+    // 优化：只在必要时检查登录状态和刷新数据
+    this.handlePageShow();
   },
   methods: {
+    // 新增：优化页面显示处理
+    handlePageShow() {
+      // 检查是否已经初始化过
+      if (!this.pageState.isInitialized) {
+        this.pageState.isInitialized = true;
+        this.initPageData();
+        return;
+      }
+
+      // 检查登录状态变化
+      const currentLoginState = this.isLogin && this.$store.state.app.token;
+      if (this.loginCheckState.lastLoginState !== currentLoginState) {
+        this.loginCheckState.lastLoginState = currentLoginState;
+        
+        if (currentLoginState) {
+          // 登录状态变为已登录，静默刷新数据
+          this.silentRefresh();
+        } else {
+          // 登录状态变为未登录，重置数据
+          this.resetUserInfo();
+        }
+      }
+
+      // 记录访问（限制频率）
+      this.recordVisitIfNeeded();
+    },
+
+    // 新增：静默刷新数据
+    async silentRefresh() {
+      if (this.loadingState.pullRefresh || this.loadingState.userInfo) {
+        return;
+      }
+
+      try {
+        // 只刷新用户信息，不刷新列表数据
+        await this.getUserSocialInfo(true);
+      } catch (error) {
+        console.log('静默刷新失败:', error);
+      }
+    },
+
+    // 新增：记录访问（带频率限制）
+    recordVisitIfNeeded() {
+      const now = Date.now();
+      if (now - this.pageState.lastVisitTime > this.pageState.visitInterval) {
+        this.pageState.lastVisitTime = now;
+        this.setVisit();
+      }
+    },
+
     // 简化的Pinia stores初始化
     initPiniaStores() {
       // 从本地存储初始化状态
@@ -545,8 +641,18 @@ export default {
       }
     },
 
-    // 统一登录状态检查
+    // 优化：统一登录状态检查
     checkLoginStatus(redirectToLogin = false) {
+      const now = Date.now();
+      
+      // 频率限制：10秒内不重复检查
+      if (now - this.loginCheckState.lastCheckTime < this.loginCheckState.checkInterval) {
+        return this.loginCheckState.lastLoginState;
+      }
+
+      this.loginCheckState.lastCheckTime = now;
+      this.loginCheckState.isChecking = true;
+
       // 简化的登录状态检查，主要使用Vuex
       const isLoggedIn = this.isLogin && this.$store.state.app.token;
 
@@ -560,10 +666,13 @@ export default {
       if (!isLoggedIn && redirectToLogin) {
         console.log('未登录，跳转到登录页面');
         toLogin();
+        this.loginCheckState.isChecking = false;
         return false;
       }
       // #endif
 
+      this.loginCheckState.lastLoginState = isLoggedIn;
+      this.loginCheckState.isChecking = false;
       return isLoggedIn;
     },
     
@@ -575,11 +684,11 @@ export default {
       }
     },
 
-    // 优化的防抖刷新方法
+    // 优化：防抖刷新方法
     debounceRefresh() {
-      // 如果正在刷新，直接返回
-      if (this.loadingState.pullRefresh) {
-        console.log('正在刷新中，跳过防抖刷新');
+      // 如果正在刷新或检查中，直接返回
+      if (this.loadingState.pullRefresh || this.loginCheckState.isChecking) {
+        console.log('正在刷新或检查中，跳过防抖刷新');
         return;
       }
 
@@ -589,13 +698,13 @@ export default {
 
       this.refreshTimer = setTimeout(() => {
         // 再次检查是否正在刷新
-        if (!this.loadingState.pullRefresh) {
+        if (!this.loadingState.pullRefresh && !this.loginCheckState.isChecking) {
           this.refreshData();
         }
-      }, 500); // 增加防抖时间到500ms
+      }, 1000); // 增加防抖时间到1秒
     },
 
-    // 简化的数据刷新检查
+    // 优化：数据刷新检查
     checkAndRefreshData() {
       if (!this.checkLoginStatus()) {
         return;
@@ -634,7 +743,7 @@ export default {
       } finally {
         // 异步记录访问
         this.$nextTick(() => {
-          this.setVisit();
+          this.recordVisitIfNeeded();
         });
       }
     },
@@ -757,6 +866,9 @@ export default {
     },
     
     handleLoginStateChanged(isLoggedIn) {
+      // 更新登录状态缓存
+      this.loginCheckState.lastLoginState = isLoggedIn;
+      
       if (isLoggedIn) {
         // 登录状态变更为已登录，刷新数据
         this.getUserSocialInfo(true).catch(err => {
@@ -826,8 +938,9 @@ export default {
         return Promise.reject(new Error(errorMsg));
       }
 
-      // 检查登录状态
-      if (!this.isLogin) {
+      // 检查登录状态（使用缓存的检查结果）
+      const isLoggedIn = this.checkLoginStatus();
+      if (!isLoggedIn) {
         const errorMsg = '未登录';
         if (!silent) {
           console.log('用户未登录，跳过获取用户信息');
@@ -929,8 +1042,9 @@ export default {
         retryCount = 0
       } = options;
 
-      // 检查登录状态
-      if (!this.checkLoginStatus()) {
+      // 检查登录状态（使用缓存的检查结果）
+      const isLoggedIn = this.checkLoginStatus();
+      if (!isLoggedIn) {
         this.resetTabState();
         return Promise.reject(new Error('未登录状态'));
       }
@@ -1483,7 +1597,7 @@ export default {
         this.page = currentPage;
         this.loadStatus = 'more';
 
-        if (err.message !== '正在加载中') {
+        if (err.message !== '正在加载中' && err.message !== '未登录状态') {
           this.showErrorToast('加载更多失败，请稍后再试', 2000);
         }
       } finally {
@@ -1501,16 +1615,19 @@ export default {
     this.scrollTop = e.scrollTop;
     
     const threshold = this.statusBarHeight + this.titleBarHeight + 80;
-    if (this.scrollTop <= threshold) {
-      this.navbarTrans = Math.min(this.scrollTop / threshold, 1);
-    } else {
-      this.navbarTrans = 1;
+    const newNavbarTrans = this.scrollTop <= threshold ? 
+      Math.min(this.scrollTop / threshold, 1) : 1;
+    
+    // 只有当透明度变化超过阈值时才更新
+    if (Math.abs(newNavbarTrans - this.navbarTrans) > 0.05) {
+      this.navbarTrans = newNavbarTrans;
     }
     
-    if (this.scrollTop > threshold) {
-      this.navigationBarColor(1);
-    } else {
-      this.navigationBarColor(0);
+    // 优化导航栏颜色变化，减少不必要的调用
+    const shouldShowDarkNav = this.scrollTop > threshold;
+    if (this.lastNavColorState !== shouldShowDarkNav) {
+      this.lastNavColorState = shouldShowDarkNav;
+      this.navigationBarColor(shouldShowDarkNav ? 1 : 0);
     }
   }
 }

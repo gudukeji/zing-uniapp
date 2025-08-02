@@ -255,10 +255,12 @@
     "mp-qq" : {
         "appid" : "1110633071"
     },
-    "vite" : {
-        "build" : {
-            "minify" : "terser"
-        }
-    }
+"vite": {
+  "build": {
+    "minify": "terser",
+    "target": ["es2020", "edge88", "firefox78", "chrome87"],
+    "cssCodeSplit": true
+  }
+}
 }
 

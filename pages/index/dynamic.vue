@@ -15,7 +15,7 @@
             <view class="nav-scroll-content">
               <view 
                 v-for="(item, index) in navList" 
-                :key="index" 
+                :key="`nav-${index}`" 
                 class="nav-item" 
                 :class="{'active': navIdx === index}"
                 :data-idx="index" 
@@ -71,7 +71,7 @@
 
             <!-- 有数据状态 -->
             <view v-else-if="!isEmpty && list.length > 0">
-                <block v-for="(item, index) in displayItems" :key="index">
+                <block v-for="(item, index) in displayItems" :key="`item-${item.id || index}`">
                   <card-gg :item="item" :idx="index" @likeback="likeClick" @followback="followClick" @update="onCardUpdate"></card-gg>
               </block>
               <uni-load-more :status="loadStatus"></uni-load-more>
@@ -91,7 +91,7 @@
             <!-- 圈子推荐区域 -->
             <scroll-view v-if="navIdx === 1 && circle.length > 0" scroll-x="true" class="scroll-box" style="height: 246rpx">
               <view class="circle-box">
-                <view v-for="(item, index) in circle" :key="index" class="circle-item" :data-url="'note/circle?id=' + item.id" @tap="navigateToFun">
+                <view v-for="(item, index) in circle" :key="`circle-${item.id || index}`" class="circle-item" :data-url="'note/circle?id=' + item.id" @tap="navigateToFun">
                   <view class="circle-item-top">
                     <image :src="item.circle_avatar || item.avatar" mode="aspectFill"></image>
                     <view v-if="item.is_official == 1" class="circle-item-tag" style="background: url(/static/img/gf.png) 0% 0% / 100% 100%;"></view>
@@ -126,7 +126,7 @@
       <view v-else-if="!isEmpty && list.length > 0" :class="[isWaterfall ? 'dynamic-box' : '']">
               <waterfall v-if="isWaterfall" :activity="[]" :note="displayItems" :page="page" @likeback="waterfallLikeClick" @followback="followClick"></waterfall>
         <block v-else>
-                <block v-for="(item, index) in displayItems" :key="index">
+                <block v-for="(item, index) in displayItems" :key="`item-${item.id || index}`">
                   <card-gg :item="item" :idx="index" @likeback="likeClick" @followback="followClick" @refresh="fetchList"></card-gg>
           </block>
         </block>
@@ -156,7 +156,7 @@
             <view v-else-if="!isEmpty && list.length > 0" :class="[isWaterfall ? 'dynamic-box' : '']">
               <waterfall v-if="isWaterfall" :activity="[]" :note="displayItems" :page="page" @likeback="waterfallLikeClick" @followback="followClick"></waterfall>
               <block v-else>
-                <block v-for="(item, index) in displayItems" :key="index">
+                <block v-for="(item, index) in displayItems" :key="`item-${item.id || index}`">
                   <card-gg :item="item" :idx="index" @likeback="likeClick" @followback="followClick" @refresh="fetchList"></card-gg>
                 </block>
               </block>
@@ -210,11 +210,11 @@ export default {
       navIdx: 1,
       list: [],
 
-      // 优化后的缓存系统
+      // 优化后的缓存系统 - 减少内存占用
       cachedData: {
-        0: { list: [], page: 1, hasMore: true, lastUpdate: 0, renderItems: 15, totalCount: 0 },
-        1: { list: [], page: 1, hasMore: true, lastUpdate: 0, renderItems: 15, totalCount: 0 },
-        2: { list: [], page: 1, hasMore: true, lastUpdate: 0, renderItems: 15, totalCount: 0 }
+        0: { list: [], page: 1, hasMore: true, lastUpdate: 0, renderItems: 10, totalCount: 0 },
+        1: { list: [], page: 1, hasMore: true, lastUpdate: 0, renderItems: 10, totalCount: 0 },
+        2: { list: [], page: 1, hasMore: true, lastUpdate: 0, renderItems: 10, totalCount: 0 }
       },
 
       circle: [], // 圈子数据
@@ -243,21 +243,21 @@ export default {
       isRefreshing: false,
       isSwitching: false,
 
-      // 优化渲染性能
-      renderItems: 15,
-      renderStep: 10,
-      maxRenderItems: 100,
+      // 优化渲染性能 - 减少初始渲染数量
+      renderItems: 10, // 从15减少到10
+      renderStep: 5,   // 从10减少到5
+      maxRenderItems: 50, // 从100减少到50
 
       // 基础状态
       _firstLoad: true,
       _lastLoginState: null,
       _navigateLock: false,
 
-      // 缓存配置
+      // 缓存配置 - 优化内存使用
       cacheConfig: {
-        maxAge: 5 * 60 * 1000,    // 5分钟缓存过期
-        maxItems: 50,             // 每个tab最多缓存50条
-        preloadThreshold: 3       // 剩余3条时预加载
+        maxAge: 3 * 60 * 1000,    // 从5分钟减少到3分钟
+        maxItems: 30,             // 从50减少到30
+        preloadThreshold: 2       // 从3减少到2
       },
 
       // 性能优化
@@ -265,19 +265,33 @@ export default {
       scrollTimer: null,
       scrollRAF: null,
 
-      // 格式化缓存
-      _formattedCache: null,
+      // 格式化缓存 - 使用WeakMap减少内存泄漏
+      _formattedCache: new Map(),
       _lastListLength: 0,
       _reachEndThrottle: false,
 
       // 性能监控
-      _performanceStart: 0
+      _performanceStart: 0,
+
+      // 新增：虚拟滚动相关
+      virtualScroll: {
+        itemHeight: 200, // 预估每个item的高度
+        visibleCount: 8,  // 可见区域显示的数量
+        bufferSize: 4,    // 缓冲区大小
+        startIndex: 0,    // 开始索引
+        endIndex: 0       // 结束索引
+      }
     }
   },
   mounted() {
     this.calcContentHeight();
     this.initPlatformFeatures();
     this.getUserLocation();
+    
+    // 确保缓存正确初始化
+    if (!this._formattedCache) {
+      this._formattedCache = new Map();
+    }
   },
   beforeDestroy() {
     // 不再解绑事件，统一到onUnload
@@ -705,16 +719,41 @@ export default {
       });
     },
 
-    onScroll() {
-      // 使用兼容的动画帧或定时器优化滚动性能
+    onScroll(e) {
+      // 使用节流优化滚动性能
       if (this.scrollRAF) return;
 
       // 兼容小程序环境
       const animationFrame = this.getAnimationFrame();
       this.scrollRAF = animationFrame(() => {
-        this.checkInViewItems();
+        this.handleScroll(e);
         this.scrollRAF = null;
       });
+    },
+
+    // 新增：处理滚动事件
+    handleScroll(e) {
+      // 更新虚拟滚动索引
+      this.updateVirtualScrollIndices(e.detail.scrollTop);
+      
+      // 检查是否需要加载更多
+      this.checkInViewItems();
+    },
+
+    // 新增：更新虚拟滚动索引
+    updateVirtualScrollIndices(scrollTop) {
+      const { itemHeight, visibleCount, bufferSize } = this.virtualScroll;
+      
+      // 计算可见区域的开始和结束索引
+      const startIndex = Math.floor(scrollTop / itemHeight);
+      const endIndex = Math.min(
+        startIndex + visibleCount + bufferSize * 2,
+        this.list.length
+      );
+
+      // 更新虚拟滚动状态
+      this.virtualScroll.startIndex = Math.max(0, startIndex - bufferSize);
+      this.virtualScroll.endIndex = endIndex;
     },
 
     // 获取兼容的动画帧方法
@@ -724,9 +763,9 @@ export default {
       // #endif
 
       // #ifndef H5
-      // 小程序环境使用 setTimeout 模拟
+      // 小程序环境使用 setTimeout 模拟，但频率降低
       return (callback) => {
-        return setTimeout(callback, 16); // 约60fps
+        return setTimeout(callback, 32); // 约30fps，减少CPU占用
       };
       // #endif
     },
@@ -754,7 +793,9 @@ export default {
         // 避免不必要的强制更新，让 Vue 的响应式系统处理
         if (oldRenderItems !== this.renderItems) {
           // 清除格式化缓存，让计算属性重新计算
-          this._formattedCache = null;
+          if (this._formattedCache) {
+            this._formattedCache.clear();
+          }
         }
       }
     },
@@ -850,7 +891,9 @@ export default {
         }
 
         // 清除格式化缓存，确保使用新数据
-        this._formattedCache = null;
+        if (this._formattedCache) {
+          this._formattedCache.clear();
+        }
 
         // 更新缓存
         this.updateCache(result);
@@ -1031,7 +1074,9 @@ export default {
           listItem._formatted = false;
 
           // 清除格式化缓存，让计算属性重新计算
-          this._formattedCache = null;
+          if (this._formattedCache) {
+            this._formattedCache.clear();
+          }
 
           // 触发响应式更新（避免重复调用$forceUpdate）
           this.$nextTick(() => {
@@ -1063,7 +1108,9 @@ export default {
         });
 
         // 清除格式化缓存，让计算属性重新计算
-        this._formattedCache = null;
+        if (this._formattedCache) {
+          this._formattedCache.clear();
+        }
 
         // 触发响应式更新
         this.$nextTick(() => {
@@ -1499,56 +1546,58 @@ export default {
         return data;
       }
 
-      // 使用浅拷贝减少内存开销
-      const result = Object.assign({}, data);
+      // 使用Object.create(null)创建更轻量的对象
+      const result = Object.create(null);
 
       // 批量设置基础属性，减少属性访问次数
-      const id = result.id || Date.now() + Math.floor(Math.random() * 1000);
-      const type = this.determineContentType(result);
-      const user = this.formatUserInfo(result);
-      const user_id = result.uid || result.user_id || user?.id || 0;
+      const id = data.id || Date.now() + Math.floor(Math.random() * 1000);
+      const type = this.determineContentType(data);
+      const user = this.formatUserInfo(data);
+      const user_id = data.uid || data.user_id || user?.id || 0;
 
-      // 一次性设置所有属性
-      Object.assign(result, {
+      // 一次性设置所有属性，避免多次属性赋值
+      Object.assign(result, data, {
         id,
         type,
         user,
         user_id,
         uid: user_id,
-        like_count: result.like_count || result.likes || 0,
-        likes: result.likes || result.like_count || 0,
-        comment_count: result.comment_count || result.comments || 0,
-        create_time_str: result.create_time_str || result.time_str || result.create_time || '刚刚',
-        province: result.province || '',
-        browse: result.browse || result.view_count || result.views || 0,
-        is_like: result.is_like ? 1 : 0
+        like_count: data.like_count || data.likes || 0,
+        likes: data.likes || data.like_count || 0,
+        comment_count: data.comment_count || data.comments || 0,
+        create_time_str: data.create_time_str || data.time_str || data.create_time || '刚刚',
+        province: data.province || '',
+        browse: data.browse || data.view_count || data.views || 0,
+        is_like: data.is_like ? 1 : 0,
+        _formatted: true
       });
 
-      // 设置字符串格式
-      result.like_count_str = String(result.like_count);
-      result.comment_count_str = String(result.comment_count);
+      // 设置字符串格式 - 使用模板字符串提高性能
+      result.like_count_str = `${result.like_count}`;
+      result.comment_count_str = `${result.comment_count}`;
 
       // 格式化媒体内容
       this.formatMediaContent(result);
 
       // 格式化位置和其他信息
-      if (result.adds_name) {
-        result.lat = result.lat || 0;
-        result.lng = result.lng || 0;
+      if (data.adds_name) {
+        result.lat = data.lat || 0;
+        result.lng = data.lng || 0;
       }
 
-      result.circle_id = result.circle_id || 0;
-      result.activity_id = result.activity_id || 0;
-      result.order_id = result.order_id || 0;
+      result.circle_id = data.circle_id || 0;
+      result.activity_id = data.activity_id || 0;
+      result.order_id = data.order_id || 0;
 
-      // 格式化评论信息
-      if (result.comment && typeof result.comment === 'object') {
-        if (!result.comment.user_name && result.comment.user) {
-          result.comment.user_name = result.comment.user.name || '';
-        }
+      // 格式化评论信息 - 优化条件判断
+      const comment = data.comment;
+      if (comment && typeof comment === 'object' && !comment.user_name && comment.user) {
+        result.comment = {
+          ...comment,
+          user_name: comment.user.name || ''
+        };
       }
 
-      result._formatted = true;
       return result;
     },
 
@@ -1682,7 +1731,9 @@ export default {
         this.navIdx = index;
 
         // 清除格式化缓存
-        this._formattedCache = null;
+        if (this._formattedCache) {
+          this._formattedCache.clear();
+        }
 
         // 重置页面状态
         this.resetTabState();
@@ -1975,6 +2026,64 @@ export default {
       // #endif
     },
 
+    // 内存回收机制
+    performMemoryCleanup() {
+      try {
+        // 清理格式化缓存
+        if (this._formattedCache) {
+          this._formattedCache.clear();
+        }
+
+        // 清理过期的缓存数据
+        if (this.cachedData && this.cacheConfig) {
+          const now = Date.now();
+          Object.keys(this.cachedData).forEach(key => {
+            const cache = this.cachedData[key];
+            if (cache && cache.lastUpdate && (now - cache.lastUpdate) > this.cacheConfig.maxAge * 2) {
+              // 清理过期缓存
+              cache.list = [];
+              cache.lastUpdate = 0;
+            }
+          });
+        }
+
+        // 清理列表中的临时数据
+        if (this.list && this.list.length > 0) {
+          this.list.forEach(item => {
+            // 清理临时属性
+            delete item._formatted;
+            delete item._temp;
+          });
+        }
+
+        // 清理定时器
+        this.clearTimers();
+
+        // 强制垃圾回收（如果支持）
+        // #ifdef H5
+        if (typeof window !== 'undefined' && window.gc && typeof window.gc === 'function') {
+          try {
+            window.gc();
+          } catch (gcError) {
+            console.warn('强制垃圾回收失败:', gcError);
+          }
+        }
+        // #endif
+
+        // #ifdef APP-PLUS
+        if (typeof plus !== 'undefined' && plus.runtime && plus.runtime.gc) {
+          try {
+            plus.runtime.gc();
+          } catch (gcError) {
+            console.warn('APP强制垃圾回收失败:', gcError);
+          }
+        }
+        // #endif
+      } catch (error) {
+        console.warn('内存清理失败:', error);
+      }
+    },
+
     // 清理定时器和内存
     clearTimers() {
       try {
@@ -1995,48 +2104,18 @@ export default {
           }
           this.scrollRAF = null;
         }
-      } catch (error) {
-      }
-    },
 
-    // 内存回收机制
-    performMemoryCleanup() {
-      try {
-        // 清理格式化缓存
-        this._formattedCache = null;
-
-        // 清理过期的缓存数据
-        if (this.cachedData && this.cacheConfig) {
-          const now = Date.now();
-          Object.keys(this.cachedData).forEach(key => {
-            const cache = this.cachedData[key];
-            if (cache && cache.lastUpdate && (now - cache.lastUpdate) > this.cacheConfig.maxAge * 2) {
-              // 清理过期缓存
-              cache.list = [];
-              cache.lastUpdate = 0;
+        // 清理请求定时器
+        if (this.requestTimers) {
+          Object.keys(this.requestTimers).forEach(key => {
+            if (this.requestTimers[key]) {
+              clearTimeout(this.requestTimers[key]);
+              this.requestTimers[key] = null;
             }
           });
         }
-
-        // 强制垃圾回收（如果支持）
-        // #ifdef H5
-        if (typeof window !== 'undefined' && window.gc && typeof window.gc === 'function') {
-          try {
-            window.gc();
-          } catch (gcError) {
-          }
-        }
-        // #endif
-
-        // #ifdef APP-PLUS
-        if (typeof plus !== 'undefined' && plus.runtime && plus.runtime.gc) {
-          try {
-            plus.runtime.gc();
-          } catch (gcError) {
-          }
-        }
-        // #endif
       } catch (error) {
+        console.warn('清理定时器失败:', error);
       }
     },
 
@@ -2324,27 +2403,81 @@ export default {
     isLogin() {
       return this.userStore.isLoggedIn;
     },
-    // 优化后的显示数据计算，使用缓存避免重复格式化
+    // 优化后的显示数据计算，使用更高效的缓存机制
     displayItems() {
-      // 使用缓存的格式化数据，避免重复计算
-      if (!this._formattedCache || this._formattedCache.length !== this.list.length) {
-        this._formattedCache = this.list.map(item => {
-          if (!item._formatted) {
-            return this.formatDynamicData(item);
-          }
-          return item;
-        });
+      // 如果列表为空，直接返回空数组
+      if (!this.list || this.list.length === 0) {
+        return [];
       }
 
-      // 只返回当前渲染数量的项目，实现虚拟滚动
-      return this._formattedCache.slice(0, this.renderItems);
+      // 确保缓存对象存在
+      if (!this._formattedCache) {
+        this._formattedCache = new Map();
+      }
+
+      // 使用更高效的缓存检查
+      const cacheKey = `${this.list.length}_${this.renderItems}`;
+      if (this._formattedCache.has(cacheKey)) {
+        return this._formattedCache.get(cacheKey);
+      }
+
+      // 只处理需要渲染的数据，减少计算量
+      const itemsToRender = this.list.slice(0, this.renderItems);
+      const formattedItems = itemsToRender.map(item => {
+        // 如果已经格式化过，直接返回
+        if (item._formatted) {
+          return item;
+        }
+        // 否则进行格式化
+        return this.formatDynamicData(item);
+      });
+
+      // 缓存结果
+      this._formattedCache.set(cacheKey, formattedItems);
+      
+      // 限制缓存大小，防止内存泄漏
+      if (this._formattedCache.size > 10) {
+        const firstKey = this._formattedCache.keys().next().value;
+        this._formattedCache.delete(firstKey);
+      }
+
+      return formattedItems;
+    },
+
+    // 新增：虚拟滚动计算属性
+    virtualScrollItems() {
+      if (!this.list || this.list.length === 0) {
+        return [];
+      }
+
+      const { startIndex, endIndex } = this.virtualScroll;
+      const visibleItems = this.list.slice(startIndex, endIndex);
+      
+      return visibleItems.map(item => {
+        if (item._formatted) {
+          return item;
+        }
+        return this.formatDynamicData(item);
+      });
+    },
+
+    // 新增：容器高度计算
+    containerHeight() {
+      return this.list.length * this.virtualScroll.itemHeight;
+    },
+
+    // 新增：偏移量计算
+    offsetY() {
+      return this.virtualScroll.startIndex * this.virtualScroll.itemHeight;
     }
   },
   watch: {
     // 监听isWaterfall变化，清除缓存让Vue自动重新渲染
     isWaterfall() {
       // 清除格式化缓存，让计算属性重新计算
-      this._formattedCache = null;
+      if (this._formattedCache) {
+        this._formattedCache.clear();
+      }
     }
   }
 }

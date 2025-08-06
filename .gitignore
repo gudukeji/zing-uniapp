@@ -1,2 +1,24 @@
-# 忽略/unpackage目录
-/unpackage
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+unpackage/
+
+# Cache directories
+.vite/
+.cache/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log

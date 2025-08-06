@@ -30,11 +30,11 @@
     "build:quickapp-webview": "uni build -p quickapp-webview"
   },
   "dependencies": {
-    "vue": "^3.4.21",
+    "vue": "^3.5.12",
     "vuex": "^4.1.0",
-    "pinia": "^2.1.7",
-    "@vue/compat": "^3.4.21",
-    "vue-i18n": "^9.9.1"
+    "pinia": "^2.2.6",
+    "@vue/compat": "^3.5.12",
+    "vue-i18n": "^10.0.4"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.8",
@@ -42,8 +42,8 @@
     "@dcloudio/uni-cli-shared": "3.0.0-4020920240930001",
     "@dcloudio/uni-stacktracey": "3.0.0-4020920240930001",
     "@dcloudio/vite-plugin-uni": "3.0.0-4020920240930001",
-    "vite": "4.4.9",
-    "sass": "^1.71.1"
+    "vite": "^5.4.10",
+    "sass": "^1.80.6"
   },
   "browserslist": [
     "Android >= 4.4",
